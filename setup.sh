@@ -57,7 +57,9 @@ sed -i.bak -E \
   .env
 rm -f .env.bak
 
-# the compose stack declares pentagi-network as external; create it if missing
-docker network inspect pentagi-network >/dev/null 2>&1 || docker network create pentagi-network
+# the compose overlays declare these networks as external; create missing ones
+for net in pentagi-network observability-network langfuse-network; do
+  docker network inspect "$net" >/dev/null 2>&1 || docker network create "$net"
+done
 echo "setup: .env generated. Start the stack with:"
 echo "  docker compose -f docker-compose.yml -f docker-compose-observability.yml -f docker-compose-graphiti.yml up -d"
