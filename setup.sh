@@ -29,7 +29,7 @@ sed -i.bak -E \
   -e "s|^NEO4J_PASSWORD=devpassword( .*)?$|NEO4J_PASSWORD=$(openssl rand -hex 16)|" \
   -e "s|^LANGFUSE_POSTGRES_PASSWORD=postgres( .*)?$|LANGFUSE_POSTGRES_PASSWORD=$(openssl rand -hex 16)|" \
   -e "s|^SCRAPER_PRIVATE_URL=https://someuser:somepass@scraper/\$|SCRAPER_PRIVATE_URL=https://scraper:$(openssl rand -hex 8)@scraper/|" \
-  -e "s|^LLM_SERVER_URL=\$|LLM_SERVER_URL=https://opencode.ai/inference/go/openai/v1|" \
+  -e "s|^LLM_SERVER_URL=\$|LLM_SERVER_URL=http://opencode-gateway:8000/inference/go/openai/v1|" \
   -e "s|^LLM_SERVER_KEY=\$|LLM_SERVER_KEY=${OPENCODE_API_KEY}|" \
   -e "s|^LLM_SERVER_MODEL=\$|LLM_SERVER_MODEL=gpt-6-luna|" \
   -e "s|^LLM_SERVER_CONFIG_PATH=\$|LLM_SERVER_CONFIG_PATH=/opt/pentagi/conf/custom.provider.yml|" \
@@ -62,4 +62,4 @@ for net in pentagi-network observability-network langfuse-network; do
   docker network inspect "$net" >/dev/null 2>&1 || docker network create "$net"
 done
 echo "setup: .env generated. Start the stack with:"
-echo "  docker compose -f docker-compose.yml -f docker-compose-observability.yml -f docker-compose-graphiti.yml up -d"
+echo "  docker compose -f docker-compose.yml -f docker-compose-gateway.yml -f docker-compose-observability.yml -f docker-compose-graphiti.yml up -d"

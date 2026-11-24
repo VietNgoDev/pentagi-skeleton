@@ -16,29 +16,31 @@ Run [PentAGI](https://pentagi.com/) — the self-hosted autonomous pentesting mu
 ## Start / stop
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose-observability.yml -f docker-compose-graphiti.yml up -d
+docker compose -f docker-compose.yml -f docker-compose-gateway.yml -f docker-compose-observability.yml -f docker-compose-graphiti.yml up -d
 ```
 
 Open the forwarded **port 8443** (`https://localhost:8443` inside the Codespace, forwarded to your browser) and sign in with `admin@example.com` / `admin`, then change the password. Grafana is forwarded on port 3000.
 
-Stop with `docker compose ... down` (add `-v` if you also want to wipe flow data — Postgres, Neo4j).
+Stop with `docker compose -f docker-compose.yml -f docker-compose-gateway.yml -f docker-compose-observability.yml -f docker-compose-graphiti.yml down` (add `-v` if you also want to wipe flow data — Postgres, Neo4j).
 
 ## How the provider is wired
 
-- `.env`: `LLM_SERVER_URL=https://opencode.ai/inference/go/openai/v1`, `LLM_SERVER_KEY=${OPENCODE_API_KEY}` → PentAGI's *custom OpenAI-compatible provider* (documented as supporting the OpenCode Go plan).
-- `conf/opencode.provider.yml` assigns a model per agent type (strong: `gpt-6-luna` for primary/pentester/adviser/assistant; light: `deepseek-v4.1-flash`, `glm-5.3-flash` for searcher/enricher/summarization) — adjust freely; valid IDs: `curl https://opencode.ai/inference/go/v1/models`. Pay-as-you-go instead of Go? Change the URL to `https://opencode.ai/inference/openai/v1` in `.env` (regenerate by deleting `.env` and re-running `bash setup.sh`).
+- `.env`: `LLM_SERVER_URL=http://opencode-gateway:8000/inference/go/openai/v1`, `LLM_SERVER_KEY=${OPENCODE_API_KEY}` → PentAGI's *custom OpenAI-compatible provider*.
+- `docker-compose.gateway.yml` + `gateway/nginx.conf`: a tiny nginx sidecar that injects the `x-opencode-session` header and an identifying User-Agent — both required by the OpenCode **Go** endpoint (plain calls get `400 … Request is missing x-opencode-session`) — then proxies to `https://opencode.ai`. This is the same gateway pattern PentAGI's docs recommend for endpoints with extra requirements.
+- `conf/opencode.provider.yml` assigns a model per agent type (strong: `gpt-6-luna` for primary/pentester/adviser/assistant; light: `deepseek-v4.1-flash`, `glm-5.3-flash` for searcher/enricher/summarization) — adjust freely; valid IDs: `curl https://opencode.ai/inference/go/v1/models`. Pay-as-you-go instead of Go? Point the nginx `proxy_pass` straight through (or bypass the gateway and set the URL to `https://opencode.ai/inference/openai/v1` in `.env`).
 - Fallback: `LLM_FALLBACK_PROVIDER=gemini`.
-- Knowledge graph: `GRAPHITI_ENABLED=true` + `graphiti/llm_configs/custom.yaml` reuses the same OpenCode endpoint.
+- Knowledge graph: `GRAPHITI_ENABLED=true` + `graphiti/custom.yaml` reuses the same OpenCode endpoint (via the gateway).
 
 ## Repo layout
 
 | File | What it is |
 | --- | --- |
 | `docker-compose.yml`, `docker-compose-observability.yml`, `docker-compose-graphiti.yml` | Pinned copies of upstream `vxcontrol/pentagi` compose files |
+| `docker-compose.gateway.yml`, `gateway/nginx.conf` | nginx sidecar injecting OpenCode Go's required session header |
+| `observability/`, `graphiti/` | Vendored upstream configs (Grafana/Loki/OTel/Jaeger-plugin; Graphiti model config) |
 | `.env.example` | Upstream env template; `setup.sh` turns it into `.env` |
 | `conf/opencode.provider.yml` | Per-agent-type models for the custom provider |
-| `graphiti/llm_configs/custom.yaml` | Knowledge-graph LLM config (OpenCode models) |
-| `setup.sh` | Idempotent `.env` generation from Codespace secrets |
+| `setup.sh` | Idempotent `.env` generation from Codespace secrets + external-network creation |
 | `.devcontainer/devcontainer.json` | Docker-in-Docker feature, port forwards, setup hook |
 
 To pick up upstream changes, re-download the compose/env files from <https://github.com/vxcontrol/pentagi>.
