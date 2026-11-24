@@ -10,7 +10,7 @@ Run [PentAGI](https://pentagi.com/) — the self-hosted autonomous pentesting mu
 2. Add Codespace secrets at `github.com/settings/codespaces` (or repo-level Settings → Codespaces):
    - `OPENCODE_API_KEY` — your OpenCode Console API key (Go plan: `https://opencode.ai/console`)
    - `GEMINI_API_KEY` — a free Google AI Studio key, used as `LLM_FALLBACK_PROVIDER`
-3. Open a Codespace on main (`< >` button → Open with Codespaces) and pick a **4-core / 32 GB** machine (2-core/4 GB is PentAGI's bare floor; DinD + Postgres + Neo4j + observability need more).
+3. Open a Codespace on main (`< >` button → Open with Codespaces) and pick the **4-core machine** (`standardLinux32gb` — 2 vCPU/4 GB is PentAGI's bare floor; DinD + Postgres + Neo4j + observability need more).
 4. On creation, `postCreateCommand` runs `setup.sh`, which generates `.env` with random salts and injects the secrets.
 
 ## Start / stop
