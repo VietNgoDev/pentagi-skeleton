@@ -12,7 +12,7 @@
   },
   "forwardPorts": [8443, 3000],
   "portsAttributes": {
-    "8443": { "label": "PentAGI web console" },
+    "8443": { "label": "PentAGI web console", "protocol": "https" },
     "3000": { "label": "Grafana" }
   },
   "postCreateCommand": "bash setup.sh",
