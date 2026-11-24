@@ -1,0 +1,85 @@
+# Per-agent-type models for the custom (OpenAI-compatible) provider.
+# Endpoint: https://opencode.ai/inference/go/openai/v1 (OpenCode Go plan)
+# Guidance from PentAGI docs: strongest models for primary_agent, pentester,
+# adviser; lighter models for searcher, enricher, summarization.
+# Model IDs from https://opencode.ai/inference/go/v1/models.
+
+simple:
+  model: "glm-5.3-flash"
+  temperature: 0.5
+  top_p: 0.5
+  n: 1
+  max_tokens: 3000
+
+simple_json:
+  model: "glm-5.3-flash"
+  temperature: 0.5
+  top_p: 0.5
+  n: 1
+  max_tokens: 3000
+  json: true
+
+primary_agent:
+  model: "gpt-6-luna"
+  n: 1
+  max_tokens: 4000
+
+assistant:
+  model: "gpt-6-luna"
+  n: 1
+  max_tokens: 6000
+
+generator:
+  model: "claude-haiku-5-5"
+  n: 1
+  max_tokens: 8192
+
+refiner:
+  model: "claude-haiku-5-5"
+  temperature: 0.7
+  top_p: 0.8
+  n: 1
+  max_tokens: 6000
+
+adviser:
+  model: "gpt-6-luna"
+  n: 1
+  max_tokens: 6000
+
+reflector:
+  model: "glm-5.3-flash"
+  n: 1
+  max_tokens: 3000
+
+searcher:
+  model: "deepseek-v4.1-flash"
+  temperature: 0.5
+  top_p: 0.5
+  n: 1
+  max_tokens: 3000
+
+enricher:
+  model: "deepseek-v4.1-flash"
+  temperature: 0.5
+  top_p: 0.5
+  n: 1
+  max_tokens: 3000
+
+coder:
+  model: "glm-5.3"
+  temperature: 0.4
+  top_p: 0.6
+  n: 1
+  max_tokens: 8192
+
+installer:
+  model: "glm-5.3"
+  temperature: 0.4
+  top_p: 0.6
+  n: 1
+  max_tokens: 6000
+
+pentester:
+  model: "gpt-6-luna"
+  n: 1
+  max_tokens: 8000

@@ -1,0 +1,21 @@
+{
+  "name": "PentAGI",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "version": "latest",
+      "dockerDashCompose": "v2"
+    }
+  },
+  "forwardPorts": [8443, 3000],
+  "portsAttributes": {
+    "8443": { "label": "PentAGI web console" },
+    "3000": { "label": "Grafana" }
+  },
+  "postCreateCommand": "bash setup.sh",
+  "customizations": {
+    "codespaces": {
+      "machine": "basicLinux32gb"
+    }
+  }
+}
