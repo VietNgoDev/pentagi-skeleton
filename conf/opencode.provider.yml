@@ -30,12 +30,12 @@ assistant:
   max_tokens: 6000
 
 generator:
-  model: "claude-haiku-5-5"
+  model: "glm-5.3"
   n: 1
   max_tokens: 8192
 
 refiner:
-  model: "claude-haiku-5-5"
+  model: "glm-5.3"
   temperature: 0.7
   top_p: 0.8
   n: 1
