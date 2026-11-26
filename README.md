@@ -19,9 +19,20 @@ Run [PentAGI](https://pentagi.com/) — the self-hosted autonomous pentesting mu
 docker compose -f docker-compose.yml -f docker-compose-gateway.yml -f docker-compose-observability.yml -f docker-compose-graphiti.yml up -d
 ```
 
-Open the forwarded **port 8443** (`https://localhost:8443` inside the Codespace, forwarded to your browser) and sign in with `admin@example.com` / `admin`, then change the password. Grafana is forwarded on port 3000.
+Open the forwarded **port 8443** (`https://localhost:8443` inside the Codespace, forwarded to your browser) and sign in with `admin@pentagi.com` / `admin`, then change the password. Grafana is forwarded on port 3000 (`admin`/`admin`).
 
 Stop with `docker compose -f docker-compose.yml -f docker-compose-gateway.yml -f docker-compose-observability.yml -f docker-compose-graphiti.yml down` (add `-v` if you also want to wipe flow data — Postgres, Neo4j).
+
+## Minimal mode (saves ~4 GB disk)
+
+The 32 GB codespace disk fills easily: images alone are ~10.5 GB (`scraper` sandbox 4.7 GB, pentagi+pgvector 1.5 GB, observability+graphiti ~4 GB). To run just the pentest core without observability and the knowledge graph:
+
+```bash
+sed -i 's/^GRAPHITI_ENABLED=.*/GRAPHITI_ENABLED=false/' .env
+docker compose -f docker-compose.yml -f docker-compose-gateway.yml up -d
+```
+
+No Grafana/traces, and agents lose knowledge-graph search, but flows run normally and disk drops from ~15 GB to ~11 GB steady-state.
 
 ## How the provider is wired
 
