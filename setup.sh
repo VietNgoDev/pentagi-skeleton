@@ -54,6 +54,8 @@ sed -i.bak -E \
   -e "s|^GRAPHITI_ENABLED=false\$|GRAPHITI_ENABLED=true|" \
   -e "s|^GRAPHITI_URL=\$|GRAPHITI_URL=http://graphiti:8000|" \
   -e "s|^GRAPHITI_LLM_CLIENT_TYPE=openai\$|GRAPHITI_LLM_CLIENT_TYPE=custom|" \
+  -e "s|^DOCKER_DEFAULT_IMAGE_FOR_PENTEST=\$|DOCKER_DEFAULT_IMAGE_FOR_PENTEST=debian:latest|" \
+  -e "s|^DOCKER_IMAGE_SELECTION_MODE=\$|DOCKER_IMAGE_SELECTION_MODE=fixed|" \
   .env
 rm -f .env.bak
 
