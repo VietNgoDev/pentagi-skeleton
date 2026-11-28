@@ -41,13 +41,12 @@ if [ -n "${GEMINI_API_KEY:-}" ]; then
     -e "s|^LLM_FALLBACK_PROVIDER=\$|LLM_FALLBACK_PROVIDER=gemini|" \
     .env
 fi
-# Point the compose bind-mount for the custom provider config at our file
+# Point the compose bind-mounts for the provider configs at our file
 sed -i.bak -E \
   -e "s|^PENTAGI_LLM_SERVER_CONFIG_PATH=\$|PENTAGI_LLM_SERVER_CONFIG_PATH=./conf/opencode.provider.yml|" \
+  -e "s|^PENTAGI_OLLAMA_SERVER_CONFIG_PATH=\$|PENTAGI_OLLAMA_SERVER_CONFIG_PATH=./conf/opencode.provider.yml|" \
+  -e "s|^PENTAGI_BEDROCK_CONFIG_PATH=\$|PENTAGI_BEDROCK_CONFIG_PATH=./conf/opencode.provider.yml|" \
   .env
-
-# compose mounts these two too (defaults in docker-compose.yml); keep them empty files
-touch example.ollama.provider.yml example.bedrock.provider.yml
 
 # Knowledge graph (docker-compose-graphiti.yml)
 sed -i.bak -E \
